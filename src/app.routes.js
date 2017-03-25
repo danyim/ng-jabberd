@@ -4,8 +4,8 @@ const routes = ($stateProvider, $urlRouterProvider) => {
   $stateProvider
     .state('register', {
       url: '/',
-      template: require('./chat.html'),
-      controller: 'chatController',
+      template: require('./register.html'),
+      controller: 'registerController',
       controllerAs: 'vm'
     })
     .state('chat', {

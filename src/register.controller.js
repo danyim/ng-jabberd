@@ -1,15 +1,10 @@
 class RegisterController {
   constructor($scope, stropheService) {
-    this.activate = this.activate.bind(this, this.activate);
     this.stropheService = stropheService;
 
-    this.recipient = '';
-    this.message = '';
-    this.messages = [{
-      message: 'Hey! This is a test.',
-      author: 'notme'
-    }];
-    this.user = 'daniel@localhost';
+    this.hostname = 'http://localhost:5280/http-bind';
+    this.username = 'daniel@localhost';
+    this.password = 'daniel';
 
     this.activate();
   }
@@ -18,8 +13,8 @@ class RegisterController {
 
   }
 
-  connect() {
-    this.stropheService.connect(this.user, 'daniel', 'http://localhost:5280/http-bind');
+  login() {
+    this.stropheService.connect(this.username, this.password, this.hostname);
   }
 
   sendMessage() {

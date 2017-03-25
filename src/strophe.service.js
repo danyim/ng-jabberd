@@ -1,7 +1,9 @@
 import { Strophe } from 'strophe.js';
 
 class StropheService {
-  constructor() {
+  constructor($q) {
+    this.$q = $q;
+
     this.credentials = null;
     this.hostname = null;
     this._conn = null;
@@ -22,11 +24,14 @@ class StropheService {
   }
 
   connect(username, password, hostname) {
+    // TODO: send the caller a promise, reolve/reject depending on the response
+    const p = $q.defer();
+
     if (!this.hostname && !hostname) {
       console.log('No hostname defined');
       return;
     }
-    if (!this.credentials || !username || !password) {
+    if (!username || !password) {
       console.log('Credentials not defined');
       return;
     }
@@ -37,7 +42,7 @@ class StropheService {
     this._conn.connect(
       this.credentials.username,
       this.credentials.password,
-      this.onConnect
+      StropheService.onConnect
     );
 
     // this._conn.rawInput = this.rawInput;
@@ -55,6 +60,7 @@ class StropheService {
   }
 
   static onConnect(status) {
+    debugger;
     if (status === Strophe.Status.CONNECTING) {
       console.log('Strophe is connecting.');
     } else if (status === Strophe.Status.CONNFAIL) {
@@ -132,6 +138,6 @@ class StropheService {
   }
 }
 
-StropheService.$inject = [''];
+StropheService.$inject = ['$q'];
 
 export default StropheService;

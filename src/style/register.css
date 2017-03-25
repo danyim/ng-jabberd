@@ -1,7 +1,28 @@
-.container {
+.register-container {
   height: 100%;
   width: 100%;
   display: flex;
-  flex: 1 0 100%;
+  flex: 1 1 100%;
   flex-direction: row;
+  justify-content: center;
+  align-items: middle;
+  background-color: rgba(44, 43, 63, 0.05);
+}
+
+.register-inner-container {
+  height: 100%;
+  width: 400px;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.register {
+  width: 400px;
+  height: 300px;
+  // border: 1px solid red;
+  background-color: #fff;
+  box-shadow: 0 0 5px 0 rgba(44, 43, 63, 0.15);
+  padding: 20px;
 }

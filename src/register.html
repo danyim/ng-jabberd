@@ -1,35 +1,20 @@
-<header>
-
-</header>
-<main>
-  <div class="container">
-    <section class="users-container">
-      <ul>
-        <li><span class="name">Bob</span></li>
-        <li class="active"><span class="name">Jane</span></li>
-        <li><span class="name">Alice</span></li>
-      </ul>
-    </section>
-    <section class="chat-container">
-      <div class="recipient">
-
-      </div>
-      <div class="msgs">
-        <div ng-class="{'message-mine': v.author === vm.user, 'message-theirs': v.author !== vm.user}" ng-repeat="(k, v) in vm.messages">
-          {{v.message}}
-        </div>
-      </div>
-      <div class="msg-input">
-        <form>
-          <input type="text" placeholder="Type your message..." ng-model="vm.message" />
-          <input type="hidden" ng-model="vm.recipient" />
-          <button type="submit" ng-click="vm.sendMessage()">Send</button>
-          <button type="button" ng-click="vm.connect()">Connect</button>
-        </form>
-      </section>
+<section class="register-container">
+  <div class="register-inner-container">
+    <div class="register">
+      <h1>Welcome to ngJabberd</h1>
+      <p>
+        XMPP Host: <input type="text" placeholder="http://localhost:5280/http-bind" ng-model="vm.hostname" />
+      </p>
+      <p>
+        Username: <input type="text" placeholder="default_user" ng-model="vm.username" />
+      </p>
+      <p>
+        Password: <input type="password" ng-model="vm.password" />
+      </p>
+      <p>
+        <button ng-click="vm.login()">Login</button>
+        <button ng-click="vm.register()">Register</button>
+      </p>
     </div>
   </div>
-</main>
-
-<footer>
-</footer>
+</section>
