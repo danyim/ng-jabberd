@@ -1,0 +1,35 @@
+<header>
+
+</header>
+<main>
+  <div class="container">
+    <section class="users-container">
+      <ul>
+        <li><span class="name">Bob</span></li>
+        <li class="active"><span class="name">Jane</span></li>
+        <li><span class="name">Alice</span></li>
+      </ul>
+    </section>
+    <section class="chat-container">
+      <div class="recipient">
+
+      </div>
+      <div class="msgs">
+        <div ng-class="{'message-mine': v.author === vm.user, 'message-theirs': v.author !== vm.user}" ng-repeat="(k, v) in vm.messages">
+          {{v.message}}
+        </div>
+      </div>
+      <div class="msg-input">
+        <form>
+          <input type="text" placeholder="Type your message..." ng-model="vm.message" />
+          <input type="hidden" ng-model="vm.recipient" />
+          <button type="submit" ng-click="vm.sendMessage()">Send</button>
+          <button type="button" ng-click="vm.connect()">Connect</button>
+        </form>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer>
+</footer>

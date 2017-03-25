@@ -1,0 +1,62 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "plugins": [
+    "babel",
+  ],
+  "extends": [
+    "airbnb/base", // We're not using React, so only get the base
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "binaryLiterals": true,
+    "blockBindings": true,
+    "classes": true,
+    "defaultParams": true,
+    "destructuring": true,
+    "forOf": true,
+    "generators": true,
+    "modules": true,
+    "objectLiteralComputedProperties": true,
+    "objectLiteralDuplicateProperties": true,
+    "objectLiteralShorthandMethods": true,
+    "objectLiteralShorthandProperties": true,
+    "octalLiterals": true,
+    "regexUFlag": true,
+    "regexYFlag": true,
+    "spread": true,
+    "superInFunctions": true,
+    "templateStrings": true,
+    "unicodeCodePointEscapes": true,
+    "globalReturn": true
+  },
+  "parser": "babel-eslint",
+  "rules": {
+    "arrow-parens": 1,
+    "babel/new-cap": 1,
+    "babel/no-await-in-loop": 1,
+    "comma-dangle": 0,
+    "dot-notation": 1,
+    "generator-star-spacing": 1,
+    "import/no-unresolved": 0,
+    "import/extensions": 0,
+    "indent": [2, 2],
+    "keyword-spacing": 0,
+    "no-console": 1,
+    "object-shorthand": 1,
+    "quotes": [2, "single"],
+    "strict": [2, "never"]
+  },
+  "globals": {
+    "__DEVELOPMENT__": true
+  },
+  "settings": {
+    "import/resolver": "webpack"
+  }
+}
