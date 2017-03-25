@@ -7,8 +7,7 @@ class StropheService {
     this.credentials = null;
     this.hostname = null;
     this._conn = null;
-
-    console.log('StropheService injected');
+    debugger;
   }
 
   setCredentials(username, password) {
@@ -25,7 +24,7 @@ class StropheService {
 
   connect(username, password, hostname) {
     // TODO: send the caller a promise, reolve/reject depending on the response
-    const p = $q.defer();
+    // const p = this.$q.defer();
 
     if (!this.hostname && !hostname) {
       console.log('No hostname defined');
