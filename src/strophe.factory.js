@@ -1,4 +1,4 @@
-import { Strophe } from 'strophe';
+// import { Strophe } from 'strophe';
 
 // TODO: The below is the problem. The register plugin requires strophe to be
 // defined before it runs any of its hooks to Strophe's code. How do we get it

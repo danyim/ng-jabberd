@@ -5,9 +5,10 @@ class RegisterController {
     this.$state = $state;
     this.$q = $q;
 
+    // Defaults.. delete this later
     this.hostname = 'http://localhost:5280/http-bind';
-    this.username = 'daniel@localhost';
-    this.password = 'daniel';
+    this.username = 'test@localhost';
+    this.password = 'test';
     this.error = '';
 
     this.activate();

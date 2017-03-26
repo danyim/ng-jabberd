@@ -1,6 +1,4 @@
 /* globals Strophe */
-// import { Strophe } from 'strophe.js';
-// import { StropheRegister } from 'strophejs-plugins/register/strophe.register';
 // import './strophe-utils';
 
 class StropheService {
@@ -12,8 +10,6 @@ class StropheService {
     this._conn = null;
     this._connectPromise = null;
     this._Strophe = strophe;
-
-    // this.registerConnect = this.registerConnect.bind(this, this.registerConnect);
   }
 
   get credentials() {
@@ -111,8 +107,7 @@ class StropheService {
     const onMessage = StropheService.onMessage;
 
     this._conn.register.connect(
-      this.credentials.username,
-      this.credentials.password,
+      this.hostname,
       function(status) {
         if (status === Strophe.Status.CONNECTING) {
           console.log('Strophe is connecting.');
@@ -124,9 +119,26 @@ class StropheService {
         } else if (status === Strophe.Status.DISCONNECTED) {
           console.log('Strophe is disconnected.');
           connectPromise.reject('Disconnected.');
+        } else if(status == Strophe.Status.AUTHFAIL) {
+          connectPromise.reject('Invalid username or password');
+        } else if (status === Strophe.Status.REGISTER) {
+          console.log('registering');
+          this.register.fields.username = this.credentials.username;
+          this.register.fields.password = this.credentials.password;
+        } else if (status === Strophe.Status.REGISTERED) {
+          console.log('registration complete!')
+        } else if (status === Strophe.Status.CONFLICT) {
+          console.log('contact already exists');
+          connectPromise.reject();
+        } else if (status === Strophe.Status.NOTACCEPTABLE) {
+          console.log("Registration form not properly filled out.");
+          connectPromise.reject();
+        } else if (status === Strophe.Status.REGIFAIL) {
+          console.log("The Server does not support In-Band Registration");
+          connectPromise.reject();
         } else if (status === Strophe.Status.CONNECTED) {
           // console.log('Strophe is connected.');
-          console.log(`Connected as ${this.jid}`);
+          console.log(`Connected! as ${this.jid}`);
           debugger;
           // check if this._conn has a value here..
           this.addHandler(onMessage, null, 'message', null, null,  null);

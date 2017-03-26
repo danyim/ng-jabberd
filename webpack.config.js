@@ -16,9 +16,9 @@ module.exports = function makeWebpackCfg() {
     app: './src/app.module.js'
   };
 
-  // config.externals = {
-  //   strophe: 'Strophe',
-  // };
+  config.externals = {
+    strophe: 'Strophe',
+  };
 
   config.resolve = {
     // Give aliases to Strophe so we can import them more easily
