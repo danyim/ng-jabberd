@@ -15,6 +15,25 @@ module.exports = function makeWebpackConfig() {
     app: './src/app.module.js'
   };
 
+  config.resolve = {
+    // Give aliases to Strophe so we can import them more easily
+    alias: {
+      'strophe-core': 'strophe.js/src/core',
+      'strophe-bosh': 'strophe.js/src/bosh',
+      'strophe-websocket': 'strophe.js/src/websocket',
+      'strophe-sha1': 'strophe.js/src/sha1',
+      'strophe-base64': 'strophe.js/src/base64',
+      'strophe-md5': 'strophe.js/src/md5',
+      'strophe-utils': 'strophe.js/src/utils',
+      'strophe-polyfill': 'strophe.js/src/polyfills',
+      'strophe': 'strophe.js/src/wrapper'
+    },
+    extensions: [
+      '.js',
+      '.css',
+    ]
+  };
+
   config.output = {
     path: __dirname + '/dist',
     publicPath: isProd ? '/' : 'http://localhost:8080/',
@@ -29,34 +48,49 @@ module.exports = function makeWebpackConfig() {
     config.devtool = 'eval-source-map';
   }
   config.module = {
-    rules: [{
-      test: /\.js$/,
-      loaders: ['ng-annotate-loader', 'babel-loader'],
-      exclude: /node_modules/
-    }, {
-      test: /\.css$/,
-      use: [
-        {
-          loader: 'style-loader'
-        },
-        {
-          loader: 'css-loader',
-          options: {sourceMap: true}
-        },
-        {
-          loader: 'postcss-loader',
-          options: {
-            config: './postcss.config.js',
+    rules: [
+      {
+        test: /\.js$/,
+        loaders: ['ng-annotate-loader', 'babel-loader'],
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader'
           },
-        }
-      ],
-    }, {
-      test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
-      loader: 'file-loader'
-    }, {
-      test: /\.html$/,
-      loader: 'raw-loader'
-    }]
+          {
+            loader: 'css-loader',
+            options: {sourceMap: true}
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: './postcss.config.js',
+            },
+          }
+        ],
+      }, {
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
+        loader: 'file-loader'
+      }, {
+        test: /\.html$/,
+        loader: 'raw-loader'
+      },
+      {
+        test: /\?fix-amd$/,
+        loader: 'imports-loader?define=>false,this=>window'
+      },
+      {
+        test: /strophejs-plugins/,
+        loader: 'imports-loader?Strophe=>strophe.Strophe'
+      },
+      {
+        test: /(bosh|websocket)\.js$/,
+        loader: 'imports-loader?Strophe=>strophe.Strophe,$build=>strophe.$build,define=>false'
+      }
+    ]
   };
 
   config.plugins = [
@@ -67,7 +101,12 @@ module.exports = function makeWebpackConfig() {
           plugins: [autoprefixer]
         }
       }
-    })
+    }),
+    // Whenever the "strophe" variable is encountered in the wild, webpack is
+    // instructed to automatically load the the module
+    new webpack.ProvidePlugin({
+      strophe: 'strophe?fix-amd'
+    }),
   ];
 
   config.plugins.push(
