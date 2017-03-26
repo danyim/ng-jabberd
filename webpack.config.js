@@ -1,32 +1,38 @@
 'use strict';
 
-var webpack = require('webpack');
-var autoprefixer = require('autoprefixer');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
+const path = require('path');
+const autoprefixer = require('autoprefixer');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-var ENV = process.env.npm_lifecycle_event;
-var isProd = ENV === 'build';
+const ENV = process.env.npm_lifecycle_event;
+const isProd = ENV === 'build';
 
-module.exports = function makeWebpackConfig() {
+module.exports = function makeWebpackCfg() {
   var config = {};
   config.entry = {
     app: './src/app.module.js'
   };
 
+  // config.externals = {
+  //   strophe: 'Strophe',
+  // };
+
   config.resolve = {
     // Give aliases to Strophe so we can import them more easily
     alias: {
-      'strophe-core': 'strophe.js/src/core',
-      'strophe-bosh': 'strophe.js/src/bosh',
-      'strophe-websocket': 'strophe.js/src/websocket',
-      'strophe-sha1': 'strophe.js/src/sha1',
-      'strophe-base64': 'strophe.js/src/base64',
-      'strophe-md5': 'strophe.js/src/md5',
-      'strophe-utils': 'strophe.js/src/utils',
-      'strophe-polyfill': 'strophe.js/src/polyfills',
-      'strophe': 'strophe.js/src/wrapper'
+      'strophe-core': path.resolve(__dirname, 'node_modules/strophe.js/src/core'),
+      'strophe-bosh': path.resolve(__dirname, 'node_modules/strophe.js/src/bosh'),
+      'strophe-websocket': path.resolve(__dirname, 'node_modules/strophe.js/src/websocket'),
+      'strophe-sha1': path.resolve(__dirname, 'node_modules/strophe.js/src/sha1'),
+      'strophe-base64': path.resolve(__dirname, 'node_modules/strophe.js/src/base64'),
+      'strophe-md5': path.resolve(__dirname, 'node_modules/strophe.js/src/md5'),
+      'strophe-utils': path.resolve(__dirname, 'node_modules/strophe.js/src/utils'),
+      'strophe-polyfill': path.resolve(__dirname, 'node_modules/strophe.js/src/polyfills'),
+      'strophe-register': path.resolve(__dirname, 'node_modules/strophejs-plugins/register/strophe.register.js'),
+      'strophe': path.resolve(__dirname, 'node_modules/strophe.js/strophe')
     },
     extensions: [
       '.js',
@@ -78,18 +84,18 @@ module.exports = function makeWebpackConfig() {
         test: /\.html$/,
         loader: 'raw-loader'
       },
-      {
-        test: /\?fix-amd$/,
-        loader: 'imports-loader?define=>false,this=>window'
-      },
-      {
-        test: /strophejs-plugins/,
-        loader: 'imports-loader?Strophe=>strophe.Strophe'
-      },
-      {
-        test: /(bosh|websocket)\.js$/,
-        loader: 'imports-loader?Strophe=>strophe.Strophe,$build=>strophe.$build,define=>false'
-      }
+      // {
+      //   test: /\?fix-amd$/,
+      //   loader: 'imports-loader?define=>false,this=>window'
+      // },
+      // {
+      //   test: /strophejs-plugins/,
+      //   loader: 'imports-loader?Strophe=>strophe.Strophe'
+      // },
+      // {
+      //   test: /(bosh|websocket)\.js$/,
+      //   loader: 'imports-loader?Strophe=>strophe.Strophe,$build=>strophe.$build,define=>false'
+      // }
     ]
   };
 
@@ -102,11 +108,11 @@ module.exports = function makeWebpackConfig() {
         }
       }
     }),
-    // Whenever the "strophe" variable is encountered in the wild, webpack is
-    // instructed to automatically load the the module
-    new webpack.ProvidePlugin({
-      strophe: 'strophe?fix-amd'
-    }),
+    // // Whenever the "strophe" variable is encountered in the wild, webpack is
+    // // instructed to automatically load the the module
+    // new webpack.ProvidePlugin({
+    //   strophe: 'strophe?fix-amd'
+    // }),
   ];
 
   config.plugins.push(

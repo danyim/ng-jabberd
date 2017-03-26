@@ -16,8 +16,7 @@
   "dependencies": {
     "angular": "^1.6.0",
     "angular-ui-router": "^0.4.2",
-    "strophe.js": "^1.2.13",
-    "strophejs-plugin-register": "^0.0.1",
+    "strophe.js": "1.2.12",
     "strophejs-plugins": "^0.0.7"
   },
   "devDependencies": {

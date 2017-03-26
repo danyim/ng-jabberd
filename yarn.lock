@@ -4189,13 +4189,9 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-strophe.js@^1.2.13:
-  version "1.2.13"
-  resolved "https://registry.yarnpkg.com/strophe.js/-/strophe.js-1.2.13.tgz#c7eb8ff69d3f8a56fd5e05bd0477372c548b9469"
-
-strophejs-plugin-register@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/strophejs-plugin-register/-/strophejs-plugin-register-0.0.1.tgz#d285d33c7d682b8d1ca37647809ac267c0a089a3"
+strophe.js@1.2.12:
+  version "1.2.12"
+  resolved "https://registry.yarnpkg.com/strophe.js/-/strophe.js-1.2.12.tgz#6142b67c95d02bb9338f5233c6ec31b96dd0ac0d"
 
 strophejs-plugins@^0.0.7:
   version "0.0.7"

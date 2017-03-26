@@ -8,5 +8,8 @@ Simple XMPP chat client built in Angular 1
 - Run `yarn` to install dependencies
 - `yarn start` to start the dev server @ [http://localhost:8080/](http://localhost:8080/)
 
+### Problems
+- [StropheJS doesn't play well with Webpack and AMD](https://github.com/strophe/strophejs/issues/166) ([another source](https://github.com/strophe/strophejs/issues/220)), so we will have to define it manually in `index.html` and use [Webpack's `externals` option to expose it](https://webpack.js.org/configuration/externals/#components/sidebar/sidebar.jsx)
+
 ### License
 MIT

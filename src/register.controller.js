@@ -33,6 +33,22 @@ class RegisterController {
       );
   }
 
+  register() {
+    this.error = '';
+    this.status = '';
+
+    const connect = this.stropheService.registerConnect(this.username, this.password, this.hostname);
+    connect.promise
+      .then(
+        (val) => {
+          this.$state.go('chat');
+        },
+        (reason) => {
+          this.error = reason;
+        }
+      );
+  }
+
   sendMessage() {
     this.stropheService.sendMessage(this.message, this.recipient);
     this.recvMessage(this.message, this.user); // Show the message we just sent

@@ -1,14 +1,19 @@
-import { Strophe } from 'strophe.js';
+/* globals Strophe */
+// import { Strophe } from 'strophe.js';
+// import { StropheRegister } from 'strophejs-plugins/register/strophe.register';
+// import './strophe-utils';
 
 class StropheService {
-  constructor($q) {
+  constructor($q, strophe) {
     this.$q = $q;
 
     this._credentials = null;
     this._hostname = null;
     this._conn = null;
     this._connectPromise = null;
+    this._Strophe = strophe;
 
+    // this.registerConnect = this.registerConnect.bind(this, this.registerConnect);
   }
 
   get credentials() {
@@ -33,7 +38,60 @@ class StropheService {
   }
 
   connect(username, password, hostname) {
+    const connectPromise = this.$q.defer();
 
+    if (!this.hostname && !hostname) {
+      console.log('No hostname defined');
+      return;
+    }
+    if (!username || !password) {
+      console.log('Credentials not defined');
+      return;
+    }
+    this.credentials = {username, password};
+    this.hostname = hostname;
+
+    debugger;
+
+    this._conn = new Strophe.Connection(this.hostname);
+    const connection = this._conn;
+    const onMessage = StropheService.onMessage;
+    this._conn.connect(
+      this.credentials.username,
+      this.credentials.password,
+      function(status) {
+        if (status === Strophe.Status.CONNECTING) {
+          console.log('Strophe is connecting.');
+        } else if (status === Strophe.Status.CONNFAIL) {
+          console.log('Strophe failed to connect.');
+          connectPromise.reject('Failed to connect.');
+        } else if (status === Strophe.Status.DISCONNECTING) {
+          console.log('Strophe is disconnecting.');
+        } else if (status === Strophe.Status.DISCONNECTED) {
+          console.log('Strophe is disconnected.');
+          connectPromise.reject('Disconnected.');
+        } else if(status == Strophe.Status.AUTHFAIL) {
+          connectPromise.reject('Invalid username or password');
+        } else if (status === Strophe.Status.CONNECTED) {
+          // console.log('Strophe is connected.');
+          console.log(`Connected as ${this.jid}`);
+          debugger;
+          // check if this._conn has a value here..
+          this.addHandler(onMessage, null, 'message', null, null,  null);
+          connectPromise.resolve();
+        }
+      }
+    );
+
+    this._conn.rawInput = this.rawInput;
+    this._conn.rawOutput = this.rawOutput;
+
+    // this._conn.addHandler(StropheService.onOwnMessage, null, 'iq', 'set', null,  null);
+
+    return connectPromise;
+  }
+
+  registerConnect(username, password, hostname) {
     const connectPromise = this.$q.defer();
 
     if (!this.hostname && !hostname) {
@@ -48,9 +106,11 @@ class StropheService {
     this.hostname = hostname;
 
     this._conn = new Strophe.Connection(this.hostname);
+
     const connection = this._conn;
     const onMessage = StropheService.onMessage;
-    this._conn.connect(
+
+    this._conn.register.connect(
       this.credentials.username,
       this.credentials.password,
       function(status) {
@@ -168,6 +228,6 @@ class StropheService {
   }
 }
 
-StropheService.$inject = ['$q'];
+StropheService.$inject = ['$q', 'strophe'];
 
 export default StropheService;
