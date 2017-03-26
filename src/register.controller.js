@@ -1,10 +1,14 @@
 class RegisterController {
-  constructor($scope, stropheService) {
+  constructor($scope, $state, $q, stropheService) {
     this.stropheService = stropheService;
+    this.$scope = $scope;
+    this.$state = $state;
+    this.$q = $q;
 
     this.hostname = 'http://localhost:5280/http-bind';
     this.username = 'daniel@localhost';
     this.password = 'daniel';
+    this.error = '';
 
     this.activate();
   }
@@ -14,7 +18,19 @@ class RegisterController {
   }
 
   login() {
-    this.stropheService.connect(this.username, this.password, this.hostname);
+    this.error = '';
+    this.status = '';
+
+    const connect = this.stropheService.connect(this.username, this.password, this.hostname);
+    connect.promise
+      .then(
+        (val) => {
+          this.$state.go('chat');
+        },
+        (reason) => {
+          this.error = reason;
+        }
+      );
   }
 
   sendMessage() {
@@ -28,6 +44,6 @@ class RegisterController {
   }
 }
 
-RegisterController.$inject = ['$scope', 'stropheService'];
+RegisterController.$inject = ['$scope', '$state', '$q', 'stropheService'];
 
 export default RegisterController;

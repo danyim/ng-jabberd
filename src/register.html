@@ -1,18 +1,29 @@
 <section class="register-container">
   <div class="register-inner-container">
     <div class="register">
-      <h1>Welcome to ngJabberd</h1>
-      <p>
-        XMPP Host: <input type="text" placeholder="http://localhost:5280/http-bind" ng-model="vm.hostname" />
+      <h1 class="center">Welcome to ngJabberd</h1>
+      <p class="error">
+        {{vm.error}}
       </p>
       <p>
-        Username: <input type="text" placeholder="default_user" ng-model="vm.username" />
+        {{vm.status}}
       </p>
       <p>
-        Password: <input type="password" ng-model="vm.password" />
+        <label for="host">XMPP Host</label>
+        <input name="host" type="text" placeholder="http://localhost:5280/http-bind" ng-model="vm.hostname" />
       </p>
       <p>
+        <label for="username">Username</label>
+        <input name="username" type="text" placeholder="default_user" ng-model="vm.username" />
+      </p>
+      <p>
+        <label for="password">Password</label>
+        <input name="password" type="password" ng-model="vm.password" />
+      </p>
+      <p class="center">
         <button ng-click="vm.login()">Login</button>
+      </p>
+      <p class="center">
         <button ng-click="vm.register()">Register</button>
       </p>
     </div>

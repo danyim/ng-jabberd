@@ -13,6 +13,7 @@ angular
   .module('ngJabberd', [uiRouter])
   .run(() => {})
   .config(routes)
-  .factory('stropheService', StropheService.stropheServiceFactory)
+  .service('stropheService', StropheService)
+  // .factory('stropheService', StropheService.stropheServiceFactory)
   .controller('chatController', ChatController)
   .controller('registerController', RegisterController)

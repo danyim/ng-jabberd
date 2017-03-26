@@ -4,27 +4,37 @@ class StropheService {
   constructor($q) {
     this.$q = $q;
 
-    this.credentials = null;
-    this.hostname = null;
+    this._credentials = null;
+    this._hostname = null;
     this._conn = null;
-    debugger;
+    this._connectPromise = null;
+
   }
 
-  setCredentials(username, password) {
-    this.username = username;
-    this.credentials = {
+  get credentials() {
+    return this._credentials;
+  }
+
+  set credentials({username, password}) {
+    this._credentials = {
       username,
       password
     };
   }
 
-  setHostName(hostname) {
-    this.hostname = hostname
+  get hostname() {
+    return this._hostname;
+  }
+
+  set hostname(hostname) {
+    if(hostname) {
+      this._hostname = hostname;
+    }
   }
 
   connect(username, password, hostname) {
-    // TODO: send the caller a promise, reolve/reject depending on the response
-    // const p = this.$q.defer();
+
+    const connectPromise = this.$q.defer();
 
     if (!this.hostname && !hostname) {
       console.log('No hostname defined');
@@ -34,24 +44,48 @@ class StropheService {
       console.log('Credentials not defined');
       return;
     }
-    this.setCredentials(username, password);
-    this.setHostName(hostname);
+    this.credentials = {username, password};
+    this.hostname = hostname;
 
     this._conn = new Strophe.Connection(this.hostname);
+    const connection = this._conn;
+    const onMessage = StropheService.onMessage;
     this._conn.connect(
       this.credentials.username,
       this.credentials.password,
-      StropheService.onConnect
+      function(status) {
+        if (status === Strophe.Status.CONNECTING) {
+          console.log('Strophe is connecting.');
+        } else if (status === Strophe.Status.CONNFAIL) {
+          console.log('Strophe failed to connect.');
+          connectPromise.reject('Failed to connect.');
+        } else if (status === Strophe.Status.DISCONNECTING) {
+          console.log('Strophe is disconnecting.');
+        } else if (status === Strophe.Status.DISCONNECTED) {
+          console.log('Strophe is disconnected.');
+          connectPromise.reject('Disconnected.');
+        } else if (status === Strophe.Status.CONNECTED) {
+          // console.log('Strophe is connected.');
+          console.log(`Connected as ${this.jid}`);
+          debugger;
+          // check if this._conn has a value here..
+          this.addHandler(onMessage, null, 'message', null, null,  null);
+          connectPromise.resolve();
+        }
+      }
     );
 
-    // this._conn.rawInput = this.rawInput;
-    // this._conn.rawOutput = this.rawOutput;
-    this._conn.addHandler(StropheService.onMessage, null, 'message', null, null,  null);
-    this._conn.addHandler(StropheService.onOwnMessage, null, 'iq', 'set', null,  null);
+    this._conn.rawInput = this.rawInput;
+    this._conn.rawOutput = this.rawOutput;
+
+    // this._conn.addHandler(StropheService.onOwnMessage, null, 'iq', 'set', null,  null);
+
+    return connectPromise;
   }
 
   sendMessage(message, recipient) {
-    console.log(`sending to ${recipient}: `, this.message);
+    console.log(`sending to ${recipient}:`, message);
+    debugger;
   }
 
   getMessages(user) {
@@ -59,12 +93,13 @@ class StropheService {
   }
 
   static onConnect(status) {
-    debugger;
     if (status === Strophe.Status.CONNECTING) {
       console.log('Strophe is connecting.');
+      this._connectPromise.notify('Strophe is connecting.');
     } else if (status === Strophe.Status.CONNFAIL) {
       console.log('Strophe failed to connect.');
       // $('#connect').get(0).value = 'connect';
+      this._connectPromise.reject('Failed to connect.');
     } else if (status === Strophe.Status.DISCONNECTING) {
       console.log('Strophe is disconnecting.');
     } else if (status === Strophe.Status.DISCONNECTED) {
@@ -74,7 +109,7 @@ class StropheService {
       console.log('Strophe is connected.');
       //connection.disconnect();
       console.log(`Connected as ${this.jid}`);
-
+      this._connectPromise.resolve(`Connected as ${this.jid}`);
       // debugger;
       // if(_strophe !== null) {
       //   this.send(_strophe.$pres().tree());
@@ -87,7 +122,7 @@ class StropheService {
   }
 
   rawOutput(data) {
-    console.log('out:', data);
+    // console.log('out:', data);
   }
 
   static onMessage(msg) {
@@ -130,10 +165,6 @@ class StropheService {
       connection.sendIQ(iq);
     }
     return true;
-  }
-
-  static stropheServiceFactory() {
-    return new StropheService();
   }
 }
 

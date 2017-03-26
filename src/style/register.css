@@ -20,9 +20,25 @@
 
 .register {
   width: 400px;
-  height: 300px;
+  // height: 300px;
   // border: 1px solid red;
   background-color: #fff;
   box-shadow: 0 0 5px 0 rgba(44, 43, 63, 0.15);
   padding: 20px;
+
+  & .center {
+    text-align: center;
+  }
+
+  & input {
+    width: 360px;
+  }
+
+  & label {
+    display: block;
+    color: #aaa;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
 }
