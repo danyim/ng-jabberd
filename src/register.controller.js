@@ -7,8 +7,8 @@ class RegisterController {
 
     // Defaults.. delete this later
     this.hostname = 'http://localhost:5280/http-bind';
-    this.username = 'test@localhost';
-    this.password = 'test';
+    this.username = 'daniel@localhost';
+    this.password = 'daniel';
     this.error = '';
 
     this.activate();

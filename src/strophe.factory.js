@@ -11,7 +11,6 @@ const StropheFactory = ($window) => {
   // if($window.strophe) {
 
   // }
-
   return $window.Strophe;
 }
 

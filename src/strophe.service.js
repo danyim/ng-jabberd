@@ -2,8 +2,9 @@
 // import './strophe-utils';
 
 class StropheService {
-  constructor($q, strophe) {
+  constructor($rootScope, $q, strophe) {
     this.$q = $q;
+    this.$rootScope = $rootScope;
 
     this._credentials = null;
     this._hostname = null;
@@ -47,11 +48,10 @@ class StropheService {
     this.credentials = {username, password};
     this.hostname = hostname;
 
-    debugger;
+    this._conn = new this._Strophe.Connection(this.hostname);
+    const onMessage = this.onMessage.bind(this);
+    const onOwnMessage = this.onOwnMessage;
 
-    this._conn = new Strophe.Connection(this.hostname);
-    const connection = this._conn;
-    const onMessage = StropheService.onMessage;
     this._conn.connect(
       this.credentials.username,
       this.credentials.password,
@@ -67,13 +67,17 @@ class StropheService {
           console.log('Strophe is disconnected.');
           connectPromise.reject('Disconnected.');
         } else if(status == Strophe.Status.AUTHFAIL) {
-          connectPromise.reject('Invalid username or password');
+          connectPromise.reject('Invalid username or password.');
         } else if (status === Strophe.Status.CONNECTED) {
           // console.log('Strophe is connected.');
           console.log(`Connected as ${this.jid}`);
-          debugger;
-          // check if this._conn has a value here..
-          this.addHandler(onMessage, null, 'message', null, null,  null);
+          // debugger;
+
+          this.addHandler(onMessage, null, 'message');
+          this.addHandler(onMessage, null, 'iq', 'set', null,  null);
+          this.send($pres().tree()); // Send prescence
+          var sendMessageQuery = $msg({to: 'alice@localhost', type: 'chat'}).c('body').t(`I'm finally connected`);
+          this.send(sendMessageQuery);
           connectPromise.resolve();
         }
       }
@@ -101,9 +105,9 @@ class StropheService {
     this.credentials = {username, password};
     this.hostname = hostname;
 
-    this._conn = new Strophe.Connection(this.hostname);
+    this._conn = new this._Strophe.Connection(this.hostname);
 
-    const connection = this._conn;
+    const aConnection = this._conn;
     const onMessage = StropheService.onMessage;
 
     this._conn.register.connect(
@@ -156,8 +160,11 @@ class StropheService {
   }
 
   sendMessage(message, recipient) {
-    console.log(`sending to ${recipient}:`, message);
+
     debugger;
+    console.log(`sending to ${recipient}:`, message);
+    const messageQuery = $msg({to: recipient, type: 'chat'}).c('body').t(message);
+    this._conn.send(messageQuery);
   }
 
   getMessages(user) {
@@ -197,18 +204,22 @@ class StropheService {
     // console.log('out:', data);
   }
 
-  static onMessage(msg) {
+  onMessage(msg) {
     debugger;
-    var to = msg.getAttribute('to');
-    var from = msg.getAttribute('from');
-    var type = msg.getAttribute('type');
-    var elems = msg.getElementsByTagName('body');
+    const to = msg.getAttribute('to');
+    const from = msg.getAttribute('from');
+    const type = msg.getAttribute('type');
+    const elems = msg.getElementsByTagName('body');
 
     if (type === 'chat' && elems.length > 0) {
-      var body = elems[0];
+      const body = elems[0];
       console.log(`Inc message ${from}: ${Strophe.getText(body)}`);
-      var text = Strophe.getText(body) + ' (this is echo)';
-
+      // const text = Strophe.getText(body) + ' (this is echo)';
+      const envelope = {
+        message: Strophe.getText(body),
+        author: from
+      };
+      this.$rootScope.$emit('messageRecv', envelope);
       //var reply = $msg({to: from, from: to, type: 'chat', id: 'purple4dac25e4'}).c('active', {xmlns: "http://jabber.org/protocol/chatstates"}).up().cnode(body);
                 //.cnode(Strophe.copyElement(body));
       //connection.send(reply.tree());
@@ -240,6 +251,6 @@ class StropheService {
   }
 }
 
-StropheService.$inject = ['$q', 'strophe'];
+StropheService.$inject = ['$rootScope' ,'$q', 'strophe'];
 
 export default StropheService;

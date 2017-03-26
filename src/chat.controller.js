@@ -1,5 +1,6 @@
 class ChatController {
-  constructor($scope, stropheService) {
+  constructor($rootScope, $scope, stropheService) {
+    this.$rootScope = $rootScope;
     this.activate = this.activate.bind(this, this.activate);
     this.stropheService = stropheService;
 
@@ -16,6 +17,8 @@ class ChatController {
 
   activate() {
 
+    this.$rootScope.$on('messageRecv', this.recvMessage);
+
   }
 
   connect() {
@@ -28,11 +31,12 @@ class ChatController {
     this.message = '';
   }
 
-  recvMessage(message, author) {
+  recvMessage({message, author}) {
+    debugger;
     this.messages.push({message, author});
   }
 }
 
-ChatController.$inject = ['$scope', 'stropheService'];
+ChatController.$inject = ['$rootScope', '$scope', 'stropheService'];
 
 export default ChatController;
