@@ -1,7 +1,9 @@
 class ChatController {
-  constructor($rootScope, $scope, stropheService) {
+  constructor($rootScope, $scope, $timeout, ModalService, stropheService) {
     this.$rootScope = $rootScope;
     this.$scope = $scope;
+    this.$timeout = $timeout;
+    this.ModalService = ModalService;
 
     this.activate = this.activate.bind(this, this.activate);
     this.stropheService = stropheService;
@@ -116,7 +118,26 @@ class ChatController {
   }
 
   newMessage() {
-    alert('ok new message');
+    this.ModalService.showModal({
+      template: require('./new-message.html'),
+      controller: 'newMessageController',
+      controllerAs: 'vm',
+      bodyClass: 'modal-open'
+    }).then((modal) => {
+      modal.close.then((result) => {
+        if(result) {
+          let index = this.getIndexByContactJid(result);
+          // Look for the contact. If it exists, change to the view. If it
+          // doesn't, make a contact object
+          if(index < 0) {
+            this.createContact(result);
+            index = this.contacts.length - 1;
+          }
+
+          this.changeContactViewWithIndex(index);
+        }
+      });
+    })
   }
 
   changeContactViewWithIndex(index) {
@@ -126,7 +147,11 @@ class ChatController {
     // the messages
     this.totalUnreadCount -= this.activeContact.unreadMessageCount;
     this.activeContact.unreadMessageCount = 0;
-    // load messages from this user
+
+    // Load backlogged messages from this user from the server?
+
+    // Focus on the input
+    this.$timeout(() => document.getElementById('chat-message').focus());
   }
 
   getAllMessagesFromContact(contactJid) {
@@ -142,7 +167,5 @@ class ChatController {
     return filtered.shift();
   }
 }
-
-ChatController.$inject = ['$rootScope', '$scope', 'stropheService'];
 
 export default ChatController;

@@ -1,0 +1,20 @@
+<div class="modal-flex-container">
+  <div class="modal-container">
+    <div class="modal-content">
+      <h2>Send a new message</h2>
+      <form>
+        <input
+          id="recipient"
+          type="text"
+          ng-model="vm.recipient"
+          placeholder="Type the recipient's name here..."
+          autofocus
+        />
+        <div class="hang-right">
+          <button type="submit" ng-click="vm.close(vm.recipient)">Add</button>
+          <button type="submit" class="inverse" ng-click="vm.close()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

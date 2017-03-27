@@ -24,7 +24,9 @@
           >
             &bull;
           </span>
-          <span class="unread" ng-if="v.unreadMessageCount !== 0">({{v.unreadMessageCount}})</span>
+          <span class="unread" ng-if="v.unreadMessageCount !== 0">
+            ({{v.unreadMessageCount}})
+          </span>
         </li>
       </ul>
     </section>
@@ -48,9 +50,20 @@
       </div>
       <div class="msg-input">
         <form>
-          <input type="text" placeholder="Type your message..." ng-model="vm.message" />
+          <input
+            type="text"
+            placeholder="Type your message..."
+            ng-model="vm.message"
+            autofocus
+          />
           <input type="hidden" ng-model="vm.recipient" />
-          <button type="submit" ng-disabled="vm.message.trim() === ''" ng-click="vm.sendMessage()">Send</button>
+          <button
+            type="submit"
+            ng-disabled="vm.message.trim() === ''"
+            ng-click="vm.sendMessage()"
+          >
+            Send
+          </button>
         </form>
       </section>
     </div>
