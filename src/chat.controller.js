@@ -1,8 +1,9 @@
 class ChatController {
-  constructor($rootScope, $scope, $timeout, ModalService, stropheService) {
+  constructor($rootScope, $scope, $timeout, $state, ModalService, stropheService) {
     this.$rootScope = $rootScope;
     this.$scope = $scope;
     this.$timeout = $timeout;
+    this.$state = $state;
     this.ModalService = ModalService;
 
     this.activate = this.activate.bind(this, this.activate);
@@ -16,12 +17,16 @@ class ChatController {
 
     this.activeContact = this.contacts[1];
     this.user = stropheService.user;
-    console.log('user is', this.user)
 
     this.activate();
   }
 
   activate() {
+
+    if(!this.stropheService.user.jid) {
+      this.$state.go('login');
+    }
+
     // Listen for the message receive event form the Strophe Angular service
     this.$rootScope.$on('messageRecv', this.messageRecvHandler.bind(this));
   }
@@ -59,6 +64,18 @@ class ChatController {
     contact.messages.push({message, fromJid, toJid});
     // Update the view
     this.$scope.$apply();
+
+    this.$timeout(() => {
+
+    })
+
+    // Scroll to the bottom of the message box DOM when a new message appears
+    this.$timeout(() => {
+      const dom = document.getElementById('message-box');
+      if(dom) {
+        dom.scrollTop = dom.scrollHeight;
+      }
+    });
   }
 
   createContact(jid, name) {
@@ -75,15 +92,33 @@ class ChatController {
   }
 
   sendMessage() {
-    this.stropheService.sendMessage(this.message, this.user.jid, this.activeContact.jid);
-
-    const message = this.message;
-    const fromJid = this.user.jid;
-    const toJid = this.activeContact.jid;
-
-    const contact = this.getContactByContactJid(toJid);
-    contact.messages.push({message, fromJid, toJid});
-    this.message = '';
+    const contact = this.getContactByContactJid(this.activeContact.jid);
+    try {
+      this.stropheService.sendMessage(this.message, this.user.jid, this.activeContact.jid);
+      contact.messages.push({
+        message: this.message,
+        fromJid: this.user.jid,
+        toJid: this.activeContact.jid
+      });
+      this.message = '';
+    }
+    catch(ex) {
+      contact.messages.push({
+        message: `(Unable to send message: ${ex.message}) ${this.message}`,
+        fromJid: 'info',
+        toJid: 'info'
+      });
+    }
+    finally {
+      this.message = '';
+      // Scroll to the bottom of the message box DOM when a new message appears
+      this.$timeout(() => {
+        const dom = document.getElementById('message-box');
+        if(dom) {
+          dom.scrollTop = dom.scrollHeight;
+        }
+      });
+    }
   }
 
   newMessage() {

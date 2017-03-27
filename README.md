@@ -16,6 +16,7 @@ Simple XMPP chat client built in Angular 1
 - (Major) Registration of new users will have to be done manually on the server due to the Strophe JS register plugin not sending the correct stanzas
     - Create a user on the server: `~/my-ejabberd/sbin/ejabberdctl register <user> localhost <password>`
     - Login as `<user>@localhost` for the username on the frontend
+- (Minor) Unable to get a chatstatus or a presence stanza from the ejabberd server, therefore no typing notification or (true) online status. The online status shown in the app assumes they're online if the other party is sending a message.
 - (Minor) Reattaching sessions after a browser refresh is still a work in progress. Partial implementation can be found in `/src/strophe.service.js` via the `reattach()` function
 - (Minor) [StropheJS doesn't play well with Webpack and AMD](https://github.com/strophe/strophejs/issues/166) ([another source](https://github.com/strophe/strophejs/issues/220)), so this project defines them manually in `<script>` tags inside `/public/index.html` and uses [Webpack's `externals` option to expose the global](https://webpack.js.org/configuration/externals/#components/sidebar/sidebar.jsx)
 

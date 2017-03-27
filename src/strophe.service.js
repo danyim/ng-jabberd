@@ -1,6 +1,4 @@
-/* globals Strophe, $msg */
-// import './strophe-utils';
-
+/* globals Strophe, $msg, $iq */
 const COOKIE_JID_KEY = 'ngJabber_session_jid';
 const COOKIE_RID_KEY = 'ngJabber_session_rid';
 const COOKIE_SID_KEY = 'ngJabber_session_sid';
@@ -82,7 +80,7 @@ class StropheService {
     }
 
     this._conn = new this._Strophe.Connection(hostname);
-    // Add 1 to the RID
+    // Must add 1 to the RID to authenticate correctly
     this._conn.attach(jid, sid, parseInt(rid, 10) + 1, function(status) {
       // console.log('reattached?', a);
       for(let v in Strophe.Status) {
@@ -129,9 +127,9 @@ class StropheService {
       function(status) {
         // 'this' is Strophe.Connection
         if (status === Strophe.Status.CONNECTING) {
-          console.log('Strophe is connecting.');
+          console.log('Strophe is connecting...');
         } else if (status === Strophe.Status.CONNFAIL) {
-          console.log('Strophe failed to connect.');
+          console.log('Strophe failed to connect!');
           connectPromise.reject('Failed to connect.');
         } else if (status === Strophe.Status.DISCONNECTING) {
           console.log('Strophe is disconnecting.');
@@ -141,7 +139,7 @@ class StropheService {
         } else if(status == Strophe.Status.AUTHFAIL) {
           connectPromise.reject('Invalid username or password.');
         } else if (status === Strophe.Status.CONNECTED) {
-          console.log(`Strophe is connected as ${this.jid}`);
+          console.log(`Success! Strophe is connected as ${this.jid}.`);
 
           /* WIP: Partial implementation of session reattachment */
           // // Once connected, store the JID and the hostname for reattaching the
@@ -176,6 +174,16 @@ class StropheService {
     return connectPromise;
   }
 
+  /**
+   * This doesn't work...
+   *
+   * Unreasonable ejabberd server error when attempting to register:
+   * <0.4469.0>@ejabberd_bosh:check_bosh_module:1019 You are trying to use BOSH
+   * (HTTP Bind) in host <<"http:">>, but the module mod_bosh is not started in
+   * that host. Configure your BOSH client to connect to the correct host, or
+   * add your desired host to the configuration, or check your 'modules' section
+   * in your ejabberd configuration file.
+   */
   registerConnect(username, password, hostname) {
     const connectPromise = this.$q.defer();
 
@@ -245,35 +253,6 @@ class StropheService {
     return connectPromise;
   }
 
-  getMessages(user) {
-    console.log(`getting messages from ${user}`);
-  }
-
-  static onConnect(status) {
-    if (status === Strophe.Status.CONNECTING) {
-      console.log('Strophe is connecting.');
-      this._connectPromise.notify('Strophe is connecting.');
-    } else if (status === Strophe.Status.CONNFAIL) {
-      console.log('Strophe failed to connect.');
-      // $('#connect').get(0).value = 'connect';
-      this._connectPromise.reject('Failed to connect.');
-    } else if (status === Strophe.Status.DISCONNECTING) {
-      console.log('Strophe is disconnecting.');
-    } else if (status === Strophe.Status.DISCONNECTED) {
-      console.log('Strophe is disconnected.');
-      // $('#connect').get(0).value = 'connect';
-    } else if (status === Strophe.Status.CONNECTED) {
-      console.log('Strophe is connected.');
-      //connection.disconnect();
-      console.log(`Connected as ${this.jid}`);
-      this._connectPromise.resolve(`Connected as ${this.jid}`);
-      // debugger;
-      // if(_strophe !== null) {
-      //   this.send(_strophe.$pres().tree());
-      // }
-    }
-  }
-
   xmlInput(e) {
     // console.log('in:', e);
   }
@@ -293,6 +272,9 @@ class StropheService {
   }
 
   sendMessage(message, fromJid, toJid) {
+    if(!this._conn) {
+      throw new Error('Not connected to a server');
+    }
     const query = $msg({ to: toJid, type: 'chat' })
       .c('body')
       .t(message);
@@ -316,43 +298,53 @@ class StropheService {
         toJid: to
       };
       this.$rootScope.$emit('messageRecv', envelope);
-
-      //var reply = $msg({to: from, from: to, type: 'chat', id: 'purple4dac25e4'}).c('active', {xmlns: "http://jabber.org/protocol/chatstates"}).up().cnode(body);
-                //.cnode(Strophe.copyElement(body));
-      //connection.send(reply.tree());
-      // console.log('ECHOBOT: I sent ' + from + ': ' + Strophe.getText(body));
     }
 
-    // We must return true to keep the handler alive.
-    // Returning false would remove it after it finishes.
+    // Return true to keep the handler alive, otherwise it will remove the
+    // handler after it finishes
     return true;
   }
 
+
+  // Unused, never called even though the hook is there
   onOwnMessage(msg) {
     debugger;
-    var elems = msg.getElementsByTagName('own-message');
+    const elems = msg.getElementsByTagName('own-message');
     if (elems.length > 0) {
-      var own = elems[0];
-      var to = msg.getAttribute('to');
-      var from = msg.getAttribute('from');
-      var iq = $iq({
-        to: from,
-        type: 'error',
-        id: msg.getAttribute('id')
-      }).cnode(own).up().c('error', {type: 'cancel', code: '501'})
-      .c('feature-not-implemented', {xmlns: 'urn:ietf:params:xml:ns:xmpp-stanzas'});
-      connection.sendIQ(iq);
+      const own = elems[0];
+      const to = msg.getAttribute('to');
+      const from = msg.getAttribute('from');
+      const iq = $iq({
+          to: from,
+          type: 'error',
+          id: msg.getAttribute('id')
+      })
+        .cnode(own)
+        .up()
+        .c('error', {type: 'cancel', code: '501'});
+
+      // .c('feature-not-implemented', {xmlns: 'urn:ietf:params:xml:ns:xmpp-stanzas'});
+      this._conn.sendIQ(iq);
     }
     return true;
   }
 
   onNotificationReceived(a) {
-    console.log('notification', a);
+    // console.log('notification', a);
+    // This method _should_ be the hook for chatstates (typing indicators), but
+    // ejabberd isn't sending any stanzas when typing state changes...
 
     return true;
   }
 
   onPresenceChange(presence) {
+    // This method should be the hook for the presence, but again, ejabbered
+    // doesn't send the stanzas when a user comes online. Perhaps they need to
+    // be added to the user's roster? That will involve adding the
+    // Strophe.Roster plugin and having an explicit 'friend request' sent to all
+    // contacts you'd like to be notified of if/when they come online.
+
+    // console.log('presence change detected', presence);
     // const rosterList = presence.getElementsByTagName
     // your_roster_callback_function(iq){
     //   $(iq).find('item').each(function(){
@@ -362,7 +354,7 @@ class StropheService {
     //   App.connection.addHandler(App.on_presence, null, "presence");
     //   App.connection.send($pres());
     // }
-    console.log('presence change detected', presence);
+
     // this.$rootScope.$emit('presenceChanged', presence);
 
     return true;

@@ -46,12 +46,12 @@
         </span><br />
         <!-- <span class="grey">{{vm.activeContact.jid}}</span> -->
       </div>
-      <div class="msgs">
+      <div id="message-box" class="msgs">
         <div
           ng-class="{'message-info': v.fromJid === 'info', 'message-mine': v.fromJid === vm.user.jid, 'message-theirs': v.fromJid !== vm.user.jid}"
           ng-repeat="(k, v) in vm.activeContact.messages"
+          ng-bind-html="v.message"
         >
-          <span ng-bind-html="v.message"></span>
         </div>
       </div>
       <div class="msg-input">
@@ -66,7 +66,7 @@
           <input type="hidden" ng-model="vm.recipient" />
           <button
             type="submit"
-            ng-disabled="vm.message.trim() === ''"
+            ng-disabled="vm.message.trim() === '' || !vm.activeContact.jid"
             ng-click="vm.sendMessage()"
           >
             Send

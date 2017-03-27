@@ -4,7 +4,7 @@ const routes = ($stateProvider, $urlRouterProvider, $locationProvider) => {
   $urlRouterProvider.otherwise('/');
 
   $stateProvider
-    .state('register', {
+    .state('login', {
       url: '/',
       template: require('./register.html'),
       controller: 'registerController',
