@@ -8,24 +8,36 @@
       <p class="center">
         {{vm.status}}
       </p>
-      <p>
-        <label for="host">XMPP Host</label>
-        <input name="host" type="text" placeholder="http://localhost:5280/http-bind" ng-model="vm.hostname" />
-      </p>
-      <p>
-        <label for="username">Username</label>
-        <input name="username" type="text" placeholder="default_user" ng-model="vm.username" />
-      </p>
-      <p>
-        <label for="password">Password</label>
-        <input name="password" type="password" ng-model="vm.password" />
-      </p>
-      <p class="center">
-        <button ng-click="vm.login()">Login</button>
-      </p>
-      <p class="center">
-        <button ng-click="vm.register()">Register</button>
-      </p>
+      <form>
+        <p>
+          <label for="host">XMPP Host</label>
+          <input name="host" type="text" placeholder="http://example.com:5280" ng-model="vm.hostname" />
+        </p>
+        <p>
+          <label for="username">Username</label>
+          <input name="username" type="text" placeholder="default_user" ng-model="vm.username" />
+        </p>
+        <p>
+          <label for="password">Password</label>
+          <input name="password" type="password" ng-model="vm.password" />
+        </p>
+        <p class="center">
+          <label for="remember-checkbox">
+            <input id="remember-checkbox" name="remember" type="checkbox" ng-model="vm.remember">
+            Remember details
+          </label>
+        </p>
+        <p class="center">
+          <button
+            type="submit"
+            ng-click="vm.login()"
+            ng-disabled="vm.hostname.trim() === '' || vm.username.trim() === '' || vm.password.trim() === ''"
+          >
+            Login
+          </button>
+          <button class="inverse" ng-click="vm.register()">Register</button>
+        </p>
+      </form>
     </div>
   </div>
 </section>

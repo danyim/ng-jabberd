@@ -1,21 +1,24 @@
+const LOGIN_SETTINGS_KEY = 'ngjabberd_login';
+
 class RegisterController {
-  constructor($scope, $state, $q, stropheService) {
+  constructor($scope, $state, $q, $cookies, stropheService) {
     this.stropheService = stropheService;
     this.$scope = $scope;
     this.$state = $state;
     this.$q = $q;
+    this.$cookies = $cookies;
 
-    // Defaults.. delete this later
-    this.hostname = 'http://localhost:5280/http-bind';
-    this.username = 'daniel@localhost';
-    this.password = 'daniel';
+    this.hostname = '';
+    this.username = '';
+    this.password = '';
     this.error = '';
+    this.remember = false;
 
     this.activate();
   }
 
   activate() {
-
+    this.loadCookies();
   }
 
   login() {
@@ -26,6 +29,7 @@ class RegisterController {
     connect.promise
       .then(
         (val) => {
+          this.saveCookiesIfRemembered();
           this.$state.go('chat');
         },
         (reason) => {
@@ -42,12 +46,39 @@ class RegisterController {
     connect.promise
       .then(
         (val) => {
+          this.saveCookiesIfRemembered();
           this.$state.go('chat');
         },
         (reason) => {
           this.error = reason;
         }
       );
+  }
+
+  loadCookies() {
+    const cookie = this.$cookies.get(LOGIN_SETTINGS_KEY);
+    if(cookie) {
+      const cookieJSON = JSON.parse(cookie);
+      this.hostname = cookieJSON.hostname;
+      this.username = cookieJSON.username;
+      this.remember = true;
+    }
+  }
+
+  saveCookiesIfRemembered() {
+    if(this.remember) {
+      this.$cookies.putObject(LOGIN_SETTINGS_KEY, {
+        hostname: this.hostname,
+        username: this.username
+      });
+    }
+    else {
+      this.clearCookies();
+    }
+  }
+
+  clearCookies() {
+    this.$cookies.remove(LOGIN_SETTINGS_KEY);
   }
 
   sendMessage() {
@@ -60,7 +91,5 @@ class RegisterController {
     this.messages.push({message, author});
   }
 }
-
-RegisterController.$inject = ['$scope', '$state', '$q', 'stropheService'];
 
 export default RegisterController;

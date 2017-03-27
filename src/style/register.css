@@ -41,4 +41,9 @@
     text-transform: uppercase;
     margin-bottom: 4px;
   }
+
+  & input[name="remember"], & label[for="remember"] {
+    width: inherit;
+    display: inline-block;
+  }
 }

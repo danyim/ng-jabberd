@@ -49,9 +49,10 @@ class ChatController {
     // contact and we'll need to create one
     if(!contact) {
       contact = this.createContact(fromJid);
-      // Automatically assume they're online if they're sending you messages...
-      contact.online = true;
     }
+
+    // Automatically assume they're online if they're sending you messages...
+    contact.online = true;
 
     // Also, if we are not currently viewing the user, increase the unread
     // message count
@@ -64,10 +65,6 @@ class ChatController {
     contact.messages.push({message, fromJid, toJid});
     // Update the view
     this.$scope.$apply();
-
-    this.$timeout(() => {
-
-    })
 
     // Scroll to the bottom of the message box DOM when a new message appears
     this.$timeout(() => {

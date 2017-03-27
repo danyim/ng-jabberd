@@ -1,18 +1,23 @@
 <header>
   <!-- <h1 class="ng-jabber-logo-text">Jabba</h1> -->
   <img src="img/logo.png" height="44" width="37" />
+  <div class="user-info">
+    {{vm.user.jid.split('/')[0]}} &nbsp;&nbsp;<a ui-sref="login">Logout</a>
+  </div>
 </header>
 <section class="chat">
   <div class="container">
     <section class="users-container">
       <div class="users-header">
         <span class="badge">{{vm.totalUnreadCount}}</span> Inbox
-        <button class="new-message" title="New message" ng-click="vm.newMessage()">+</button>
+        <button class="new-message" title="New message" ng-click="vm.newMessage()">
+          <span>+</span>
+        </button>
       </div>
       <ul ng-if="vm.contacts.length === 0">
         <li class="empty grey">
           No contacts.<br />
-          Click + to start a new thread.
+          Click + to start a new conversation.
         </li>
       </ul>
       <ul>

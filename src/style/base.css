@@ -42,6 +42,10 @@ button {
   border: 0;
   padding: 0 10px;
   cursor: pointer;
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 }
 
 button.inverse {
