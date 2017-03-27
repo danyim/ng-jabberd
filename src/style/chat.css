@@ -73,6 +73,12 @@ section.chat {
       color: #2c2b3f;
     }
 
+    & ul li.empty {
+      font-size: 0.8rem;
+      text-align: center;
+      border-bottom: none;
+    }
+
     & .users-header {
       width: 320px;
       height: 50px;

@@ -9,6 +9,12 @@
         <span class="badge">{{vm.totalUnreadCount}}</span> Inbox
         <button class="new-message" title="New message" ng-click="vm.newMessage()">+</button>
       </div>
+      <ul ng-if="vm.contacts.length === 0">
+        <li class="empty grey">
+          No contacts.<br />
+          Click + to start a new thread.
+        </li>
+      </ul>
       <ul>
         <li
           ng-class="{ active: v.jid === vm.activeContact.jid }"
