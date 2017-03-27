@@ -1,21 +1,25 @@
 <header>
-
+  <!-- <h1 class="ng-jabber-logo-text">Jabba</h1> -->
+  <img src="img/logo.png" height="44" width="37" />
 </header>
 <main>
   <div class="container">
     <section class="users-container">
+      <div class="users-header">
+        <span class="badge">5</span> Inbox
+        <button class="new-message" title="New message" ng-click="vm.newMessage()">+</button>
+      </div>
       <ul>
-        <li><span class="name">Bob</span></li>
-        <li class="active"><span class="name">Jane</span></li>
-        <li><span class="name">Alice</span></li>
+        <li ng-class="{ active: v.jid === vm.activeContact.jid }" ng-repeat="(k, v) in vm.contacts" ng-click="vm.changeContactViewWithIndex($index)"><span class="name">{{v.name}}</span></li>
       </ul>
     </section>
     <section class="chat-container">
       <div class="recipient">
-
+        <span class="name">{{vm.activeContact.name}}</span><br />
+        <span class="online-indicator">{{ vm.activeContact.online ? 'online' : 'offline' }}</span>
       </div>
       <div class="msgs">
-        <div ng-class="{'message-mine': v.author === vm.user, 'message-theirs': v.author !== vm.user}" ng-repeat="(k, v) in vm.messages">
+        <div ng-class="{'message-info': v.author === 'info', 'message-mine': v.author === vm.user, 'message-theirs': v.author !== vm.user}" ng-repeat="(k, v) in vm.messages">
           {{v.message}}
         </div>
       </div>

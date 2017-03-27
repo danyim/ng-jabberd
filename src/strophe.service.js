@@ -205,7 +205,6 @@ class StropheService {
   }
 
   onMessage(msg) {
-    debugger;
     const to = msg.getAttribute('to');
     const from = msg.getAttribute('from');
     const type = msg.getAttribute('type');

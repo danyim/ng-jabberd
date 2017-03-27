@@ -10,6 +10,10 @@ html, body {
   height: 100%;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 a {
   color: #03A9F4;
 }
@@ -46,4 +50,20 @@ main {
   display: flex;
   flex: 1 0 100%;
   flex-direction: row;
+}
+
+header {
+  width: 1280px;
+  height: 80px;
+  background-color: #ffffff;
+  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.18);
+  padding: 18px 30px;
+}
+
+.ng-jabber-logo-text {
+  font-size: 2.5rem;
+  background: linear-gradient(180deg, #45c4b0, #BCE6E6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
 }

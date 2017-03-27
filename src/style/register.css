@@ -26,11 +26,6 @@
   box-shadow: 0 0 5px 0 rgba(44, 43, 63, 0.15);
   padding: 20px;
 
-  & h1 {
-    background: linear-gradient(116deg, #45c4b0, #1dd3a6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
   & .center {
     text-align: center;
   }
