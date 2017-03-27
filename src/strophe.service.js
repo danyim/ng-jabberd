@@ -14,8 +14,11 @@ class StropheService {
 
     this._credentials = null;
     this._hostname = null;
-    this._conn = null;
+    this._user = {
+      jid: null
+    };
 
+    this._conn = null;
     this._connectPromise = null;
     this._Strophe = strophe;
 
@@ -50,6 +53,16 @@ class StropheService {
       username,
       password
     };
+  }
+
+  get user() {
+    return this._user;
+  }
+
+  set user(user) {
+    if(user) {
+      this._user = user;
+    }
   }
 
   get hostname() {
@@ -103,6 +116,12 @@ class StropheService {
     const onPresenceChange = this.onPresenceChange.bind(this);
     const cookies = this.$cookies;
     const cachedHostname = this.hostname;
+    let setUser = function(jid) {
+      this.user = {
+        jid
+      };
+    };
+    setUser = setUser.bind(this);
 
     this._conn.connect(
       this.credentials.username,
@@ -129,6 +148,10 @@ class StropheService {
           // // session later
           // cookies.put(COOKIE_JID_KEY, this.jid);
           // cookies.put(COOKIE_HOST_KEY, cachedHostname);
+          // // Another way of getting RID/SID for attach
+          // const rid = this._proto.rid;
+          // const sid = this._proto.sid;
+          setUser(this.jid);
 
           this.addHandler(onMessage, null, 'message');
           this.addHandler(onOwnMessage, null, 'iq', 'set', null,  null);
@@ -142,9 +165,6 @@ class StropheService {
           // Send a test message on connect
           // const msgQ = $msg({to: 'alice@localhost', type: 'chat'}).c('body').t(`Sheesh, I'm finally connected.`);
           // this.send(msgQ);
-
-          // const rid = this._proto.rid;
-          // const sid = this._proto.sid;
           connectPromise.resolve();
         }
       }

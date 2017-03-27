@@ -11,43 +11,12 @@ class ChatController {
     this.recipient = '';
     this.message = '';
     this.totalUnreadCount = 0;
-    // this.messages = [{
-    //   message: 'Hey! This is a test.',
-    //   author: 'info'
-    // }];
 
-    this.contacts = [
-      // {
-      //   name: 'Bobby Tables',
-      //   jid: 'bobby@localhost',
-      //   unreadMessageCount: 0,
-      //   online: true,
-      //   messages: [
-      //     {
-      //       message: 'Sup, mang?',
-      //       author: 'info'
-      //     }
-      //   ]
-      // },{
-      //   name: 'The Dude',
-      //   jid: 'dude@localhost',
-      //   unreadMessageCount: 5,
-      //   online: false,
-      //   messages: []
-      // },
-      // {
-      //   name: 'Alice',
-      //   jid: 'alice@localhost',
-      //   unreadMessageCount: 0,
-      //   online: false,
-      //   messages: []
-      // }
-    ];
+    this.contacts = [];
 
     this.activeContact = this.contacts[1];
-    this.user = {
-      jid: 'daniel@localhost'
-    };
+    this.user = stropheService.user;
+    console.log('user is', this.user)
 
     this.activate();
   }
@@ -141,7 +110,7 @@ class ChatController {
   }
 
   changeContactViewWithIndex(index) {
-    console.log('changing view to contact', this.contacts[index].name);
+    // console.log('changing view to contact', this.contacts[index].name);
     this.activeContact = this.contacts[index];
     // Reset the unread message count as the act of changing the view is reading
     // the messages
@@ -151,7 +120,12 @@ class ChatController {
     // Load backlogged messages from this user from the server?
 
     // Focus on the input
-    this.$timeout(() => document.getElementById('chat-message').focus());
+    this.$timeout(() => {
+      const input = document.getElementById('chat-message');
+      if(input) {
+        input.focus();
+      }
+    }, 100);
   }
 
   getAllMessagesFromContact(contactJid) {
