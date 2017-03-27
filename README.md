@@ -1,6 +1,8 @@
 # ng-jabberd
 Simple XMPP chat client built in Angular 1
 
+<div style="text-align:center"><img src="https://raw.githubusercontent.com/danyim/ng-jabberd/master/src/public/demo.gif" align+'center" /></div>
+
 ## Installation
 ### Server
 - [Follow this guide from ejabberd](https://docs.ejabberd.im/developer/install-osx/) to build the source with OSX and to get ejabberd up and running. I recommend installing Adium (`brew cask install adium`) to verify that your server works
