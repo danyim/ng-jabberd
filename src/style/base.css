@@ -67,3 +67,7 @@ header {
   -webkit-text-fill-color: transparent;
   margin: 0;
 }
+
+.large {
+  font-size: 4.0rem;
+}

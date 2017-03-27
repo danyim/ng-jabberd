@@ -13,8 +13,17 @@
         <li
           ng-class="{ active: v.jid === vm.activeContact.jid }"
           ng-repeat="(k, v) in vm.contacts"
-          ng-click="vm.changeContactViewWithIndex($index)">
+          ng-click="vm.changeContactViewWithIndex($index)"
+        >
           <span class="name">{{v.name}}</span>
+          <span
+            class="online-indicator"
+            ng-class="{ 'red': !v.online, 'green': v.online }"
+            ng-if="v.online"
+            title="Online!"
+          >
+            &bull;
+          </span>
           <span class="unread" ng-if="v.unreadMessageCount !== 0">({{v.unreadMessageCount}})</span>
         </li>
       </ul>
@@ -22,11 +31,14 @@
     <section class="chat-container">
       <div class="recipient">
         <span class="name">{{vm.activeContact.name}}</span>
-        <span class="online-indicator" ng-class="{ 'red': !vm.activeContact.online, 'green': vm.activeContact.online }">{{ vm.activeContact.online ? '(Online)' : '(Offline)' }}</span><br />
+        <span class="online-indicator" ng-class="{ 'red': !vm.activeContact.online, 'green': vm.activeContact.online }">{{ vm.activeContact.online ? 'Online' : 'Offline' }}</span><br />
         <span class="grey">{{vm.activeContact.jid}}</span>
       </div>
       <div class="msgs">
-        <div ng-class="{'message-info': v.fromJid === 'info', 'message-mine': v.fromJid === vm.user.jid, 'message-theirs': v.fromJid !== vm.user.jid}" ng-repeat="(k, v) in vm.activeContact.messages">
+        <div
+          ng-class="{'message-info': v.fromJid === 'info', 'message-mine': v.fromJid === vm.user.jid, 'message-theirs': v.fromJid !== vm.user.jid}"
+          ng-repeat="(k, v) in vm.activeContact.messages"
+        >
           {{v.message}}
         </div>
       </div>
