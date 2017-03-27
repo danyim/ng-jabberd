@@ -1,5 +1,7 @@
 import angular from 'angular';
 import uiRouter from 'angular-ui-router';
+import ngCookies from 'angular-cookies';
+import ngSanitize from 'angular-sanitize';
 import routes from './app.routes'
 import ChatController from './chat.controller';
 import RegisterController from './register.controller';
@@ -11,7 +13,7 @@ import './style/chat.css';
 import './style/register.css';
 
 angular
-  .module('ngJabberd', [uiRouter])
+  .module('ngJabberd', [ uiRouter, ngCookies, ngSanitize ])
   .run(() => {})
   .config(routes)
   .service('stropheService', StropheService)

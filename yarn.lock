@@ -78,6 +78,10 @@ angular-mocks@^1.5.0:
   version "1.6.3"
   resolved "https://registry.yarnpkg.com/angular-mocks/-/angular-mocks-1.6.3.tgz#12fafc0f1e0903f16864004ba375bf3fb9101ef1"
 
+angular-sanitize@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.6.3.tgz#f8d93cc7e7a983ad19cc96a84a88e1d65a89873b"
+
 angular-ui-router@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/angular-ui-router/-/angular-ui-router-0.4.2.tgz#b6aed1ca69a683c82e3992898eabd4ba15868608"

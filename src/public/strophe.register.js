@@ -208,7 +208,7 @@ Strophe.addConnectionPlugin('register', {
         // send a get request for registration, to get all required data fields
         conn._addSysHandler(this._get_register_cb.bind(this),
                             null, "iq", null, null);
-        conn.send($iq({type: "get"}).c("query",
+        conn.sendIQ($iq({type: "get"}).c("query",
             {xmlns: Strophe.NS.REGISTER}).tree());
 
         return true;
@@ -272,7 +272,7 @@ Strophe.addConnectionPlugin('register', {
         // providing required information
         conn._addSysHandler(this._submit_cb.bind(this),
                             null, "iq", null, null);
-        conn.send(query);
+        conn.sendIQ(query);
     },
 
     /** PrivateFunction: _submit_cb

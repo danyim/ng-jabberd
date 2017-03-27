@@ -218,10 +218,14 @@ section.chat {
     }
 
     & button {
-      display: flex;
-      align-self: center;
       width: 70px;
       height: 32px;
+      text-align: center;
+      margin: 1.2rem;
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
     }
   }
 }

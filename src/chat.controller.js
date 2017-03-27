@@ -8,30 +8,31 @@ class ChatController {
 
     this.recipient = '';
     this.message = '';
+    this.totalUnreadCount = 0;
     // this.messages = [{
     //   message: 'Hey! This is a test.',
     //   author: 'info'
     // }];
 
     this.contacts = [
-      {
-        name: 'Bobby Tables',
-        jid: 'bobby@localhost',
-        unreadMessageCount: 0,
-        online: true,
-        messages: [
-          {
-            message: 'Sup, mang?',
-            author: 'info'
-          }
-        ]
-      },{
-        name: 'The Dude',
-        jid: 'dude@localhost',
-        unreadMessageCount: 5,
-        online: false,
-        messages: []
-      },
+      // {
+      //   name: 'Bobby Tables',
+      //   jid: 'bobby@localhost',
+      //   unreadMessageCount: 0,
+      //   online: true,
+      //   messages: [
+      //     {
+      //       message: 'Sup, mang?',
+      //       author: 'info'
+      //     }
+      //   ]
+      // },{
+      //   name: 'The Dude',
+      //   jid: 'dude@localhost',
+      //   unreadMessageCount: 5,
+      //   online: false,
+      //   messages: []
+      // },
       // {
       //   name: 'Alice',
       //   jid: 'alice@localhost',
@@ -54,10 +55,6 @@ class ChatController {
     this.$rootScope.$on('messageRecv', this.messageRecvHandler.bind(this));
   }
 
-  // connect() {
-  //   this.stropheService.connect(this.user, 'daniel', 'http://localhost:5280/http-bind');
-  // }
-
   messageRecvHandler(event, { message, fromJid, toJid }) {
     this.recvMessage(message, fromJid, toJid);
   }
@@ -72,16 +69,38 @@ class ChatController {
       contact = this.getContactByContactJid(this.user.jid);
     }
 
+    // If we tried to find a contact and couldn't find one, assume this is a new
+    // contact and we'll need to create one
+    if(!contact) {
+      contact = this.createContact(fromJid);
+      // Automatically assume they're online if they're sending you messages...
+      contact.online = true;
+    }
+
     // Also, if we are not currently viewing the user, increase the unread
     // message count
-    if(fromJid !== this.activeContact.jid) {
+    if(!this.activeContact || fromJid !== this.activeContact.jid) {
       const from = this.getContactByContactJid(fromJid);
       from.unreadMessageCount += 1;
+      this.totalUnreadCount += 1;
     }
 
     contact.messages.push({message, fromJid, toJid});
     // Update the view
     this.$scope.$apply();
+  }
+
+  createContact(jid, name) {
+    const newContact = {
+      name: name ? name : jid,
+      jid: jid,
+      unreadMessageCount: 0,
+      online: false,
+      messages: []
+    };
+
+    this.contacts.push(newContact);
+    return newContact;
   }
 
   sendMessage() {
@@ -105,6 +124,7 @@ class ChatController {
     this.activeContact = this.contacts[index];
     // Reset the unread message count as the act of changing the view is reading
     // the messages
+    this.totalUnreadCount -= this.activeContact.unreadMessageCount;
     this.activeContact.unreadMessageCount = 0;
     // load messages from this user
   }
