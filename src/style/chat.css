@@ -119,6 +119,16 @@
     letter-spacing: -0.2px;
     color: #2c2b3f;
   }
+  & .online-indicator {
+    margin-left: 10px;
+    line-height: 1.6;
+  }
+  & .red {
+    color: red;
+  }
+  & .green {
+    color: green;
+  }
 }
 
 .msgs {

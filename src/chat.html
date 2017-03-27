@@ -16,7 +16,7 @@
     <section class="chat-container">
       <div class="recipient">
         <span class="name">{{vm.activeContact.name}}</span><br />
-        <span class="online-indicator">{{ vm.activeContact.online ? 'online' : 'offline' }}</span>
+        <span class="online-indicator" ng-class="{ 'red': !vm.activeContact.online, 'green': vm.activeContact.online }">{{ vm.activeContact.online ? '(Online)' : '(Offline)' }}</span>
       </div>
       <div class="msgs">
         <div ng-class="{'message-info': v.author === 'info', 'message-mine': v.author === vm.user, 'message-theirs': v.author !== vm.user}" ng-repeat="(k, v) in vm.messages">
